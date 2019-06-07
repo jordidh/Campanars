@@ -78,6 +78,8 @@ router.get('/', function(req, res, next) {
           'latitude': latitude,
           'longitude': longitude
         };
+        campanarSeleccionat = JSON.stringify(config);
+        /*
         geocoding.location(config, function (err, data) {
           if (err) {
             campanarSeleccionat = 'El més alt. Error = ' + err;
@@ -85,7 +87,7 @@ router.get('/', function(req, res, next) {
             campanarSeleccionat = data;
           }
         });
-
+         */
       } else {
         campanarSeleccionat = 'El més alt';
       }
