@@ -64,6 +64,7 @@ router.get('/', function(req, res, next) {
     res.render('index', {
       title: 'Alçada de Campanars de Catalunya',
       clientLocation: response,
+      campanars: JSON.stringify(CAMPANARS),  // S'ha de passar fent un stringify sinó no es recupera bé al template
       campanarSeleccionat: campanarSeleccionat
     });
   });

@@ -26,16 +26,12 @@ block content
     const gridOptions = {
       columnDefs: columnDefs,
       enableSorting: true,
-      enableFilter: true
+      enableFilter: true,
+      rowData: !{campanars}
     };
     const eGridDiv = document.querySelector('#myGrid');
     new agGrid.Grid(eGridDiv, gridOptions);
-    fetch('http://localhost:3000/api/campanars').then(function (response) {
-      return response.json();
-    }).then(function (data) {
-      gridOptions.api.setRowData(data);
-      console.log('availWidth = ' + screen.availWidth);
-      console.log('availHeight = ' + screen.availHeight);
-      document.getElementById('myGrid').style.width = (screen.availWidth > 1000 ? screen.availWidth - 300 : screen.availWidth) + 'px';
-      document.getElementById('myGrid').style.height = (screen.availHeight > 800 ? screen.availHeight - 400 : screen.availHeight) + 'px';
-    })
+    //console.log('availWidth = ' + screen.availWidth);
+    //console.log('availHeight = ' + screen.availHeight);
+    document.getElementById('myGrid').style.width = (screen.availWidth > 1000 ? screen.availWidth - 300 : screen.availWidth) + 'px';
+    document.getElementById('myGrid').style.height = (screen.availHeight > 800 ? screen.availHeight - 400 : screen.availHeight) + 'px';
