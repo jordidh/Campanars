@@ -71,22 +71,26 @@ router.get('/', function(req, res, next) {
       longitude = geolocIpstack.longitude;
     }
 
-    if (latitude !== 0 && longitude !== 0) {
-      var geocoding = new require('reverse-geocoding');
-      var config = {
-        'latitude': latitude,
-        'longitude': longitude
-      };
-      geocoding.location(config, function (err, data){
-        if(err){
-          campanarSeleccionat = 'El més alt ' + err;
-        }else{
-          campanarSeleccionat = data;
-        }
-      });
+    try {
+      if (latitude !== 0 && longitude !== 0) {
+        var geocoding = new require('reverse-geocoding');
+        var config = {
+          'latitude': latitude,
+          'longitude': longitude
+        };
+        geocoding.location(config, function (err, data){
+          if(err){
+            campanarSeleccionat = 'El més alt. Error = ' + err;
+          }else{
+            campanarSeleccionat = data;
+          }
+        });
 
-    } else {
-      campanarSeleccionat = 'El més alt';
+      } else {
+        campanarSeleccionat = 'El més alt';
+      }
+    } catch (e) {
+      campanarSeleccionat = 'El més alt. Exception = ' + e.message();
     }
 
 
