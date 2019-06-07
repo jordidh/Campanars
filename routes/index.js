@@ -35,82 +35,65 @@ router.get('/', function(req, res, next) {
      is_eu: false } }
    */
 
+  var latitude = 0;
+  var longitude = 0;
 
-  var response2 = {};
+  // Mètode 1: Obtenim la geolocalització del headers de la petició de l'usuari
+  var geolocRequestHeaders = {};
   const corsHandler = cors({ origin: true });
 
   corsHandler(req, res, function() {
-    response2 = {
+    geolocRequestHeaders = {
       country: req.headers["x-appengine-country"],
       region: req.headers["x-appengine-region"],
       city: req.headers["x-appengine-city"],
       cityLatLong: req.headers["x-appengine-citylatlong"],
       userIP: req.headers["x-appengine-user-ip"]
     };
-
-    console.log(JSON.stringify(response2));
   });
 
-  /*
-  function _geolocation(req, res) {
-    const data = {
-      country: req.headers["x-appengine-country"],
-      region: req.headers["x-appengine-region"],
-      city: req.headers["x-appengine-city"],
-      cityLatLong: req.headers["x-appengine-citylatlong"],
-      userIP: req.headers["x-appengine-user-ip"]
-    };
-
-    res.json(data)
-  };
-
-  exports.geolocation = (req, res) => {
-    const corsHandler = cors({ origin: true })
-
-    return corsHandler(req, res, function() {
-      return _geolocation(req, res);
-    });
-  };
-   */
-
-  //console.log('IP = ' + JSON.stringify(req.connection._remoteAddress));
-  //console.log('IP = ' + JSON.stringify(req.ip));
-
-  //var ip = req.ip.replace('::ffff:', '');
-
-
-  ipstack(response2.userIP, config.ipstack.api, function(err, response) {
-
-    console.log(response);
-
+  // Mètode 2: A partir de la IP de l'usuari amb IPSTACK intentem obtenir les seves dades
+  var geolocIpstack = {};
+  ipstack(geolocRequestHeaders.userIP, config.ipstack.api, function(err, response) {
     if (err) {
       campanarSeleccionat = 'El mes alt';
     } else {
-      // TODO: reverse geolocation
-      /*
-      function getAddress (latitude, longitude) {
-        $.ajax('https://maps.googleapis.com/maps/api/geocode/json?
-        latlng=' + latitude + ',' + longitude + '&key=' +
-        GOOGLE_MAP_KEY)
-      .then(
-            function success (response) {
-              console.log('User\'s Address Data is ', response)
-            },
-            function fail (status) {
-              console.log('Request failed.  Returned status of',
-                  status)
-            }
-        )}
-      getAddress(6.4531, 3.3958);*/
-
-
-      campanarSeleccionat = 'El mes proper a la ubicació del client';
+      geolocIpstack = response;
     }
+
+    // Si geolocRequestHeaders.cityLatLong existeix i està plè intentem geolocalitar a partir d'aquest
+    // Sinó intentem geolocalitzar a partir de geolocIpstack.latitude i geolocIpstack.longitude
+    if (geolocRequestHeaders && geolocRequestHeaders.cityLatLong) {
+      latitude = geolocRequestHeaders.cityLatLong;
+      longitude = geolocRequestHeaders.cityLatLong;
+    } else if (geolocIpstack && geolocIpstack.latitude && geolocIpstack.longitude) {
+      latitude = geolocIpstack.latitude;
+      longitude = geolocIpstack.longitude;
+    }
+
+    if (latitude !== 0 && longitude !== 0) {
+      var geocoding = new require('reverse-geocoding');
+      var config = {
+        'latitude': latitude,
+        'longitude': longitude
+      };
+      geocoding.location(config, function (err, data){
+        if(err){
+          campanarSeleccionat = 'El més alt ' + err;
+        }else{
+          campanarSeleccionat = data;
+        }
+      });
+
+    } else {
+      campanarSeleccionat = 'El més alt';
+    }
+
 
     res.render('index', {
       title: 'Alçada de Campanars de Catalunya',
       clientLocation: JSON.stringify(response),
-      clientLocation2: JSON.stringify(response2),
+      clientLocation2: JSON.stringify(geolocRequestHeaders),
       campanars: JSON.stringify(CAMPANARS),  // S'ha de passar fent un stringify sinó no es recupera bé al template
       campanarSeleccionat: campanarSeleccionat
     });
