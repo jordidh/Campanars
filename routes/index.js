@@ -38,50 +38,50 @@ router.get('/', function(req, res, next) {
   var latitude = 0;
   var longitude = 0;
 
-  // Mètode 1: Obtenim la geolocalització del headers de la petició de l'usuari
-  var geolocRequestHeaders = {};
-  const corsHandler = cors({ origin: true });
+  try {
+    // Mètode 1: Obtenim la geolocalització del headers de la petició de l'usuari
+    var geolocRequestHeaders = {};
+    const corsHandler = cors({origin: true});
 
-  corsHandler(req, res, function() {
-    geolocRequestHeaders = {
-      country: req.headers["x-appengine-country"],
-      region: req.headers["x-appengine-region"],
-      city: req.headers["x-appengine-city"],
-      cityLatLong: req.headers["x-appengine-citylatlong"],
-      userIP: req.headers["x-appengine-user-ip"]
-    };
-  });
+    corsHandler(req, res, function () {
+      geolocRequestHeaders = {
+        country: req.headers["x-appengine-country"],
+        region: req.headers["x-appengine-region"],
+        city: req.headers["x-appengine-city"],
+        cityLatLong: req.headers["x-appengine-citylatlong"],
+        userIP: req.headers["x-appengine-user-ip"]
+      };
+    });
 
-  // Mètode 2: A partir de la IP de l'usuari amb IPSTACK intentem obtenir les seves dades
-  var geolocIpstack = {};
-  ipstack(geolocRequestHeaders.userIP, config.ipstack.api, function(err, response) {
-    if (err) {
-      campanarSeleccionat = 'El mes alt';
-    } else {
-      geolocIpstack = response;
-    }
+    // Mètode 2: A partir de la IP de l'usuari amb IPSTACK intentem obtenir les seves dades
+    var geolocIpstack = {};
+    ipstack(geolocRequestHeaders.userIP, config.ipstack.api, function (err, response) {
+      if (err) {
+        campanarSeleccionat = 'El mes alt';
+      } else {
+        geolocIpstack = response;
+      }
 
-    // Si geolocRequestHeaders.cityLatLong existeix i està plè intentem geolocalitar a partir d'aquest
-    // Sinó intentem geolocalitzar a partir de geolocIpstack.latitude i geolocIpstack.longitude
-    if (geolocRequestHeaders && geolocRequestHeaders.cityLatLong) {
-      latitude = geolocRequestHeaders.cityLatLong;
-      longitude = geolocRequestHeaders.cityLatLong;
-    } else if (geolocIpstack && geolocIpstack.latitude && geolocIpstack.longitude) {
-      latitude = geolocIpstack.latitude;
-      longitude = geolocIpstack.longitude;
-    }
+      // Si geolocRequestHeaders.cityLatLong existeix i està plè intentem geolocalitar a partir d'aquest
+      // Sinó intentem geolocalitzar a partir de geolocIpstack.latitude i geolocIpstack.longitude
+      if (geolocRequestHeaders && geolocRequestHeaders.cityLatLong) {
+        latitude = geolocRequestHeaders.cityLatLong;
+        longitude = geolocRequestHeaders.cityLatLong;
+      } else if (geolocIpstack && geolocIpstack.latitude && geolocIpstack.longitude) {
+        latitude = geolocIpstack.latitude;
+        longitude = geolocIpstack.longitude;
+      }
 
-    try {
       if (latitude !== 0 && longitude !== 0) {
         var geocoding = new require('reverse-geocoding');
         var config = {
           'latitude': latitude,
           'longitude': longitude
         };
-        geocoding.location(config, function (err, data){
-          if(err){
+        geocoding.location(config, function (err, data) {
+          if (err) {
             campanarSeleccionat = 'El més alt. Error = ' + err;
-          }else{
+          } else {
             campanarSeleccionat = data;
           }
         });
@@ -89,19 +89,26 @@ router.get('/', function(req, res, next) {
       } else {
         campanarSeleccionat = 'El més alt';
       }
-    } catch (e) {
-      campanarSeleccionat = 'El més alt. Exception = ' + e.message();
-    }
 
+      res.render('index', {
+        title: 'Alçada de Campanars de Catalunya',
+        clientLocation: JSON.stringify(geolocIpstack),
+        clientLocation2: JSON.stringify(geolocRequestHeaders),
+        campanars: JSON.stringify(CAMPANARS),  // S'ha de passar fent un stringify sinó no es recupera bé al template
+        campanarSeleccionat: campanarSeleccionat
+      });
+    });
+  } catch (e) {
+    campanarSeleccionat = 'El més alt. Exception = ' + e.message();
 
     res.render('index', {
       title: 'Alçada de Campanars de Catalunya',
-      clientLocation: JSON.stringify(response),
+      clientLocation: JSON.stringify(geolocIpstack),
       clientLocation2: JSON.stringify(geolocRequestHeaders),
       campanars: JSON.stringify(CAMPANARS),  // S'ha de passar fent un stringify sinó no es recupera bé al template
       campanarSeleccionat: campanarSeleccionat
     });
-  });
+  }
 });
 
 
