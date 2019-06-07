@@ -1,0 +1,192 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+p.error {
+  background-color: #4f0907;
+  color: white;
+}
+
+p.ok {
+  background-color: #02340c;
+  color: white;
+}
+
+p.small {
+  font: 9px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+div.box {
+  width: 90%;
+  border: 2px solid #467270;
+  padding: 20px;
+  margin: 0px;
+}
+
+.sidenav {
+  width: 130px;
+  position: fixed;
+  z-index: 1;
+  top: 20px;
+  left: 10px;
+  background: #eee;
+  overflow-x: hidden;
+  padding: 8px 0;
+}
+
+.sidenav a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  color: #2196F3;
+  display: block;
+}
+
+.sidenav a:hover {
+  color: #064579;
+}
+
+.main {
+  margin-left: 140px; /* Same width as the sidebar + left position in px */
+  padding: 0px 10px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+table {
+  width: 100%;
+  table-layout:fixed;
+}
+
+table.calendar {
+  width: 50%;
+  table-layout:fixed;
+}
+
+td {
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+}
+
+th {
+  background-color: #0B3861;
+  color: white;
+
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+}
+
+
+th.comment {
+  background-color: #467270;
+  color: white;
+
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+}
+
+td.comment {
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+}
+
+td.calendar-month-odd {
+  text-align: center;
+  border-bottom: 1px solid #ededed;
+  background-color: #c5ffbb;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+}
+
+td.calendar-month-even {
+  text-align: center;
+  border-bottom: 1px solid #ededed;
+  background-color: #dddb97;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+}
+
+td.calendar-holiday {
+  text-align: center;
+  border-bottom: 1px solid #ededed;
+  background-color: #ff7f7d;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+}
+
+th.ticket, td.ticket {
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+}
+
+th.arch {
+  background-color: #57000d;
+  color: white;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2
+}
+
+/*hover ha d'estar per sota de nth-child, sinó no funciona ja que sempre s'aplica el nth-child un cop s'ha aplicat el hover*/
+tr:hover {
+  background-color: #F4FA58
+}
+
+td.error {
+  background-color: #ff0000
+}
+
+td.ok {
+  background-color: #007e06
+}
+
+td.active {
+  background-color: #5fbe05
+}
+
+td.inactive {
+  background-color: #22403b;
+  color: white;
+}
+
+td.disabled {
+  background-color: #09b9ff
+}
+
+td.ok {
+  background-color: #c6ecc6
+}

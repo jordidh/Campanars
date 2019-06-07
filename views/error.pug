@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1 #{title}
+
+  if error
+    p(class='error') #{error}
+  if message
+    p #{message}
+
+  p
+    a(href='#{backTo}') Back

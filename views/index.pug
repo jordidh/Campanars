@@ -1,0 +1,41 @@
+extends layout
+
+block content
+  h1 #{title}
+
+  h2 Campanars
+  div
+    if clientLocation == null
+      p No s'ha pogut determinar la ubicació
+    else
+      p Ubicació #{clientLocation}
+    p Campanar #{campanarSeleccionat}
+
+  div
+    p Llista de tots els campanars ordenats per comarca
+    #myGrid.ag-theme-balham(style='height:200px; width:90%')
+
+  script(type='text/javascript', charset='utf-8').
+    const columnDefs = [
+      {headerName: 'Num', field: 'id'},
+      {headerName: 'Poble', field: 'poble'},
+      {headerName: 'Advocació', field: 'advocació'},
+      {headerName: 'Comarca', field: 'comarca'},
+      {headerName: 'Alçada', field: 'alçada'}
+    ];
+    const gridOptions = {
+      columnDefs: columnDefs,
+      enableSorting: true,
+      enableFilter: true
+    };
+    const eGridDiv = document.querySelector('#myGrid');
+    new agGrid.Grid(eGridDiv, gridOptions);
+    fetch('http://localhost:3000/api/campanars').then(function (response) {
+      return response.json();
+    }).then(function (data) {
+      gridOptions.api.setRowData(data);
+      console.log('availWidth = ' + screen.availWidth);
+      console.log('availHeight = ' + screen.availHeight);
+      document.getElementById('myGrid').style.width = (screen.availWidth > 1000 ? screen.availWidth - 300 : screen.availWidth) + 'px';
+      document.getElementById('myGrid').style.height = (screen.availHeight > 800 ? screen.availHeight - 400 : screen.availHeight) + 'px';
+    })
