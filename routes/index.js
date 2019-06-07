@@ -33,7 +33,10 @@ router.get('/', function(req, res, next) {
      calling_code: '1',
      is_eu: false } }
    */
-  ipstack(req.connection._remoteAddress, config.ipstack.api, function(err, response) {
+  console.log('IP = ' + JSON.stringify(req.connection._remoteAddress));
+
+
+  ipstack(req.connection.remoteAddress, config.ipstack.api, function(err, response) {
 
     console.log(response);
 
