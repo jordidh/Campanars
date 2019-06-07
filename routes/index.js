@@ -34,9 +34,12 @@ router.get('/', function(req, res, next) {
      is_eu: false } }
    */
   console.log('IP = ' + JSON.stringify(req.connection._remoteAddress));
+  console.log('IP = ' + JSON.stringify(req.ip));
+
+  var ip = req.ip.replace('::ffff:', '');
 
 
-  ipstack(req.connection.remoteAddress, config.ipstack.api, function(err, response) {
+  ipstack(ip, config.ipstack.api, function(err, response) {
 
     console.log(response);
 
