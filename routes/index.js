@@ -9,37 +9,13 @@ router.get('/', function(req, res, next) {
 
   // Es busca el campanar mes proper al del client
   var campanarSeleccionat = '';
-
-  // Geoip location
-  /**
-  { ip: '8.8.8.8',
-  type: 'ipv4',
-  continent_code: 'NA',
-  continent_name: 'North America',
-  country_code: 'US',
-  country_name: 'United States',
-  region_code: null,
-  region_name: null,
-  city: null,
-  zip: null,
-  latitude: 37.751,
-  longitude: -97.822,
-  location:
-   { geoname_id: null,
-     capital: 'Washington D.C.',
-     languages: [ [Object] ],
-     country_flag: 'http://assets.ipstack.com/flags/us.svg',
-     country_flag_emoji: '🇺🇸',
-     country_flag_emoji_unicode: 'U+1F1FA U+1F1F8',
-     calling_code: '1',
-     is_eu: false } }
-   */
-
   var latitude = 0;
   var longitude = 0;
 
   try {
     // Mètode 1: Obtenim la geolocalització del headers de la petició de l'usuari
+    // Les dades obtingudes són de l'estil:
+    // {"country":"ES","region":"ct","city":"barcelona","cityLatLong":"41.385064,2.173404","userIP":"188.77.35.126"}
     var geolocRequestHeaders = {};
     const corsHandler = cors({origin: true});
 
@@ -54,6 +30,15 @@ router.get('/', function(req, res, next) {
     });
 
     // Mètode 2: A partir de la IP de l'usuari amb IPSTACK intentem obtenir les seves dades
+    // Les dades obtingudes són de l'estil:
+    // {"ip":"188.77.35.126","type":"ipv4","continent_code":"EU","continent_name":"Europe","country_code":"ES",
+    // "country_name":"Spain","region_code":"CT","region_name":"Catalonia","city":"Seva","zip":"08553",
+    // "latitude":41.8383,"longitude":2.2801,"location":{"geoname_id":3109023,"capital":"Madrid","languages":
+    // [{"code":"es","name":"Spanish","native":"Español"},{"code":"eu","name":"Basque","native":"Euskara"},
+    // {"code":"ca","name":"Catalan","native":"Català"},{"code":"gl","name":"Galician","native":"Galego"},
+    // {"code":"oc","name":"Occitan","native":"Occitan"}],
+    // "country_flag":"http://assets.ipstack.com/flags/es.svg","country_flag_emoji":"🇪🇸",
+    // "country_flag_emoji_unicode":"U+1F1EA U+1F1F8","calling_code":"34","is_eu":true}}
     var geolocIpstack = {};
     ipstack(geolocRequestHeaders.userIP, config.ipstack.api, function (err, response) {
       if (err) {
@@ -64,9 +49,10 @@ router.get('/', function(req, res, next) {
 
       // Si geolocRequestHeaders.cityLatLong existeix i està plè intentem geolocalitar a partir d'aquest
       // Sinó intentem geolocalitzar a partir de geolocIpstack.latitude i geolocIpstack.longitude
-      if (geolocRequestHeaders && geolocRequestHeaders.cityLatLong) {
-        latitude = geolocRequestHeaders.cityLatLong;
-        longitude = geolocRequestHeaders.cityLatLong;
+      if (geolocRequestHeaders && geolocRequestHeaders.cityLatLong && geolocRequestHeaders.cityLatLong.includes(',')) {
+        let coords = geolocRequestHeaders.cityLatLong.split(',');
+        latitude = coords[0];
+        longitude = coords[1];
       } else if (geolocIpstack && geolocIpstack.latitude && geolocIpstack.longitude) {
         latitude = geolocIpstack.latitude;
         longitude = geolocIpstack.longitude;
