@@ -76,10 +76,10 @@ router.get('/', function(req, res, next) {
   //console.log('IP = ' + JSON.stringify(req.connection._remoteAddress));
   //console.log('IP = ' + JSON.stringify(req.ip));
 
-  var ip = req.ip.replace('::ffff:', '');
+  //var ip = req.ip.replace('::ffff:', '');
 
 
-  ipstack(ip, config.ipstack.api, function(err, response) {
+  ipstack(response2.userIP, config.ipstack.api, function(err, response) {
 
     console.log(response);
 
