@@ -1,16 +1,22 @@
 extends layout
 
 block content
+  if error
+    p Error #{error}
+
   h1 #{title}
 
   h2 Campanars
   div
-    if clientLocation == null
-      p No s'ha pogut determinar la ubicació
-    else
-      p Ubicació #{clientLocation}
+    if geocodeFromRequestHeaders
+      p geocodeFromRequestHeaders: #{geocodeFromRequestHeaders}
 
-    p Ubicació2 #{clientLocation2}
+    if geocodeFromUsersIP
+      p geocodeFromUsersIP: #{geocodeFromUsersIP}
+
+    if reverseGeocoding
+      p reverseGeocoding: #{reverseGeocoding}
+
     p Campanar #{campanarSeleccionat}
 
   div
