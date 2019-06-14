@@ -146,6 +146,8 @@ router.get('/', function(req, res, next) {
           // No s'han torbat dades
           towerSelected = JSON.stringify(CAMPANARS[INDEX_CAMPANAR_MES_ALT]);
         }
+
+        doneSelectTower(null);
       }
 
     }, function (err, results) {
