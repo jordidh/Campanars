@@ -134,7 +134,7 @@ router.get('/', function(req, res, next) {
                   userLocalityName = reverseGeoloc.json.results[i].address_components[j].types.length[0];
 
                   for(let k = 0; k < CAMPANARS.length; k++) {
-                    if (CAMPANARS[k].poble.indexOf(userLocalityName) !== -1) {
+                    if (CAMPANARS[k].poble.toUpperCase().indexOf(userLocalityName).trim().toUpperCase() !== -1) {
                       towerSelected = JSON.stringify(CAMPANARS[k]);
                     }
                   }
