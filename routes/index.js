@@ -121,12 +121,32 @@ router.get('/', function(req, res, next) {
       selectTower: function(doneSelectTower) {
         console.log('---> 4.selectTower');
 
-        debugInfo = 'Searching ' + userLocalityName.toUpperCase();
-
         if (reverseGeoloc &&
             reverseGeoloc.json &&
             reverseGeoloc.json.results &&
             reverseGeoloc.json.results.length > 0) {
+
+          //Agafem el primer result i no mirem els altres
+          if (reverseGeoloc.json.results[0].address_components &&
+              reverseGeoloc.json.results[0].address_components.length > 0) {
+            for (let j = 0; j < reverseGeoloc.json.results[0].address_components.length; j++) {
+              if (reverseGeoloc.json.results[0].address_components[j].types &&
+                  reverseGeoloc.json.results[0].address_components[j].types.length > 0 &&
+                  reverseGeoloc.json.results[0].address_components[j].types.length[0] === 'locality') {
+                userLocalityName = reverseGeoloc.json.results[0].address_components[j].types.length[0];
+                debugInfo = 'Searching ' + userLocalityName.toUpperCase();
+
+                for(let k = 0; k < CAMPANARS.length; k++) {
+                  if (CAMPANARS[k].poble.toUpperCase().indexOf(userLocalityName.toUpperCase()) !== -1) {
+                    towerSelected = JSON.stringify(CAMPANARS[k]);
+
+                    debugInfo += ' found ' + CAMPANARS[k].poble.toUpperCase();
+                  }
+                }
+              }
+            }
+          }
+          /*
           for (let i = 0; i < reverseGeoloc.json.results.length; i++) {
             if (reverseGeoloc.json.results[i].address_components &&
                 reverseGeoloc.json.results[i].address_components.length > 0) {
@@ -135,6 +155,7 @@ router.get('/', function(req, res, next) {
                     reverseGeoloc.json.results[i].address_components[j].types.length > 0 &&
                     reverseGeoloc.json.results[i].address_components[j].types.length[0] === 'locality') {
                   userLocalityName = reverseGeoloc.json.results[i].address_components[j].types.length[0];
+                  debugInfo = 'Searching ' + userLocalityName.toUpperCase();
 
                   for(let k = 0; k < CAMPANARS.length; k++) {
                     if (CAMPANARS[k].poble.toUpperCase().indexOf(userLocalityName.toUpperCase()) !== -1) {
@@ -146,7 +167,7 @@ router.get('/', function(req, res, next) {
                 }
               }
             }
-          }
+          }*/
         } else {
           // No s'han torbat dades
           towerSelected = JSON.stringify(CAMPANARS[INDEX_CAMPANAR_MES_ALT]);
