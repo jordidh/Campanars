@@ -18,14 +18,15 @@ router.get('/', function(req, res, next) {
   var latitude = 0;
   var longitude = 0;
 
+  var geolocRequestHeaders = {};
+  var geolocIPStack = {};
+  var reverseGeoloc = {};
+  var userLocalityName = '';
+  var towerSelected = JSON.stringify(CAMPANARS[INDEX_CAMPANAR_MES_ALT]);
+  var debugInfo = '';
+
+
   try {
-
-    var geolocRequestHeaders = {};
-    var geolocIPStack = {};
-    var reverseGeoloc = {};
-    var userLocalityName = '';
-    var towerSelected = JSON.stringify(CAMPANARS[INDEX_CAMPANAR_MES_ALT]);
-
     async.series({
       // Obtenció de les coordenades Mètode 1: Obtenim la geolocalització del headers de la petició de l'usuari
       // Les dades obtingudes són de l'estil:
@@ -120,6 +121,8 @@ router.get('/', function(req, res, next) {
       selectTower: function(doneSelectTower) {
         console.log('---> 4.selectTower');
 
+        debugInfo = 'Searching ' + userLocalityName.toUpperCase();
+
         if (reverseGeoloc &&
             reverseGeoloc.json &&
             reverseGeoloc.json.results &&
@@ -134,8 +137,10 @@ router.get('/', function(req, res, next) {
                   userLocalityName = reverseGeoloc.json.results[i].address_components[j].types.length[0];
 
                   for(let k = 0; k < CAMPANARS.length; k++) {
-                    if (CAMPANARS[k].poble.toUpperCase().indexOf(userLocalityName).trim().toUpperCase() !== -1) {
+                    if (CAMPANARS[k].poble.toUpperCase().indexOf(userLocalityName.toUpperCase()) !== -1) {
                       towerSelected = JSON.stringify(CAMPANARS[k]);
+
+                      debugInfo += ' found ' + CAMPANARS[k].poble.toUpperCase();
                     }
                   }
                 }
@@ -171,7 +176,8 @@ router.get('/', function(req, res, next) {
           reverseGeocoding: JSON.stringify(reverseGeoloc),
           pobleUsuari: userLocalityName,
           campanars: JSON.stringify(CAMPANARS),  // S'ha de passar fent un stringify sinó no es recupera bé al template
-          campanarSeleccionat: towerSelected
+          campanarSeleccionat: towerSelected,
+          debugInfo: debugInfo
         });
       }
     });

@@ -7,6 +7,11 @@ block content
   h1 #{title}
 
   h2 Campanars
+
+  div
+    p Llista de tots els campanars ordenats per comarca
+    #myGrid.ag-theme-balham(style='height:200px; width:90%')
+
   div
     if geocodeFromRequestHeaders
       p geocodeFromRequestHeaders: #{geocodeFromRequestHeaders}
@@ -22,9 +27,8 @@ block content
 
     p Campanar #{campanarSeleccionat}
 
-  div
-    p Llista de tots els campanars ordenats per comarca
-    #myGrid.ag-theme-balham(style='height:200px; width:90%')
+    if debugInfo
+      p debugInfo: #{debugInfo}
 
   script(type='text/javascript', charset='utf-8').
     const columnDefs = [
