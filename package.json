@@ -18,7 +18,7 @@
     "fs": "0.0.1-security",
     "ipstack": "^0.1.1",
     "morgan": "^1.9.1",
-    "pug": "^2.0.3",
+    "pug": "^3.0.1",
     "serve-favicon": "^2.5.0"
   }
 }
